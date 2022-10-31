@@ -1,0 +1,19 @@
+let num : Int
+num = 11
+if(num > 1) {
+    let i : Int
+    i = 2
+    while(i < num / 2) {
+        if(num % i == 0) {
+            print("Number is not prime")
+            break
+        }
+        else {
+            print("Number is prime")
+        }
+        i = i + 1
+    }
+}
+else {
+    print("Number is not prime")
+}

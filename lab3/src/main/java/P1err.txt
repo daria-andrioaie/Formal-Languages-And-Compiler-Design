@@ -1,4 +1,4 @@
-let a : Int
+let a ~ Int
 a = 5
 let b : Int
 b = 7

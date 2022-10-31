@@ -43,15 +43,18 @@ class BSTree {
         return root;
     }
 
-    <T> boolean search(T key)  {
+    <T> int search(T key)  {
         return search_Recursive(root, key);
     }
 
     //recursive insert function
-    <T> boolean search_Recursive(Node<?> root, T key)  {
+    <T> int search_Recursive(Node<?> root, T key)  {
         // Base Cases: root is null or key is present at root
-        if (root==null || Objects.equals(root.key.toString(), key.toString()))
-            return true;
+        if(root == null) {
+            return -1;
+        }
+        if (Objects.equals(root.key.toString(), key.toString()))
+            return root.code;
         // val is greater than root's key
         if (root.key.toString().compareTo(key.toString()) > 0)
             return search_Recursive(root.left, key);
@@ -70,7 +73,7 @@ class BSTree {
 
     private String inOrderTraversal(Node<?> root) {
         if(root != null) {
-            return inOrderTraversal(root.left) + root.key + " " + root.code + "\n" + inOrderTraversal(root.right);
+            return inOrderTraversal(root.left) + root.key + "  ->  " + root.code + "\n" + inOrderTraversal(root.right);
         }
         return "";
     }
@@ -86,7 +89,7 @@ public class SymbolTable {
         data.add(key);
     }
 
-    public <T> boolean search(T key)  {
+    public <T> int search(T key)  {
         return data.search(key);
     }
 

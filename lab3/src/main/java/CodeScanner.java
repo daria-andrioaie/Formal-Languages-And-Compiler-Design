@@ -1,5 +1,5 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,11 +10,14 @@ public class CodeScanner {
     private final ConstantsSymbolTable constantsST;
     private final IdentifiersSymbolTable identifiersST;
 
+    private final ProgramInternalForm pifTable;
+
     public CodeScanner(String filepath) {
         this.programFilePath = filepath;
         this.language = new LanguageSpecification();
         this.constantsST = new ConstantsSymbolTable();
         this.identifiersST = new IdentifiersSymbolTable();
+        this.pifTable = new ProgramInternalForm();
     }
 
     public void scan() {
@@ -34,7 +37,7 @@ public class CodeScanner {
             }
 
             fileScanner.close();
-            buildSymbolTable(tokensWithLineNumbers);
+            buildSTandPIF(tokensWithLineNumbers);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -106,35 +109,72 @@ public class CodeScanner {
         return token.toString();
     }
 
-    private void buildSymbolTable(List<Pair<String, Integer>> tokensWithLineNumbers) {
+    private void buildSTandPIF(List<Pair<String, Integer>> tokensWithLineNumbers) {
         boolean isLexicallyCorrect = true;
         for(Pair<String, Integer> tokenPair: tokensWithLineNumbers) {
             String token = tokenPair.getKey();
 
             if(language.isReservedWord(token) || language.isSeparator(token) || language.isOperator(token)) {
-                continue;
+                int code = language.getCode(token);
+                pifTable.add(token, new Pair<>(code, -1));
             }
-            if(language.isIdentifier(token)) {
+            else if(language.isIdentifier(token)) {
                 this.identifiersST.add(token);
+                int positionInSymbolTable = this.identifiersST.search(token);
+                pifTable.add(token, new Pair<>(1, positionInSymbolTable));
             } else if(language.isConstant(token)) {
                 this.constantsST.add(token);
+                int positionInSymbolTable = this.constantsST.search(token);
+                pifTable.add(token, new Pair<>(0, positionInSymbolTable));
             } else {
                 System.out.println("Error on line " + tokenPair.getValue() + ": invalid token " + token);
                 isLexicallyCorrect = false;
                 break;
             }
         }
-
         if(isLexicallyCorrect) {
             System.out.println("Program is lexically correct.");
         }
+        writeResults();
+    }
 
-        System.out.println();
-        System.out.println("------------------ IDENTIFIERS --------------------");
-        System.out.println(identifiersST.sorted());
-        System.out.println();
-        System.out.println("------------------ CONSTANTS --------------------");
-        System.out.println(constantsST.sorted());
+    private void writeResults() {
+        try {
+            File symbolTableFile = new File("SymbolTable.txt");
+            try {
+                Files.deleteIfExists(symbolTableFile.toPath());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
+            FileWriter symbolTableFileWriter = new FileWriter(symbolTableFile, true);
+            BufferedWriter symbolTableWriter = new BufferedWriter(symbolTableFileWriter);
+            symbolTableWriter.write("The symbol table is implemented as a binary search tree.\n");
+            symbolTableWriter.write("IDENTIFIERS:\n");
+            symbolTableWriter.write(identifiersST.sorted());
+            symbolTableWriter.write("\n");
+            symbolTableWriter.write("CONSTANTS:\n");
+            symbolTableWriter.write(constantsST.sorted());
+            symbolTableWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            File symbolTableFile = new File("ProgramInternalForm.txt");
+            try {
+                Files.deleteIfExists(symbolTableFile.toPath());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            FileWriter pifFileWriter = new FileWriter(symbolTableFile, true);
+            BufferedWriter pifWriter = new BufferedWriter(pifFileWriter);
+            pifWriter.write("Program Internal Form:\n");
+            pifWriter.write(pifTable.toString());
+            pifWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

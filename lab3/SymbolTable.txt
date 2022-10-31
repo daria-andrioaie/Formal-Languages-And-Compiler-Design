@@ -1,0 +1,13 @@
+The symbol table is implemented as a binary search tree.
+IDENTIFIERS:
+a  ->  0
+b  ->  1
+
+CONSTANTS:
+"2 is not smaller than three"  ->  5
+"2 is smaller than three"  ->  4
+"Hi! My name is Anna!"  ->  0
+"Hi! Nice to meet you"  ->  1
+"String a is not equal to b"  ->  6
+2  ->  2
+3  ->  3
