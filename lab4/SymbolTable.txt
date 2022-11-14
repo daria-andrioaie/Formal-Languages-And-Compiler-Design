@@ -1,0 +1,10 @@
+The symbol table is implemented as a binary search tree.
+IDENTIFIERS:
+a  ->  1
+a1a  ->  0
+b  ->  2
+
+CONSTANTS:
+"a is smaller than b"  ->  2
+5  ->  0
+7  ->  1

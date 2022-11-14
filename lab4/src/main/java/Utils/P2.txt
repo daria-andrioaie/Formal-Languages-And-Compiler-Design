@@ -1,0 +1,15 @@
+let a : String
+a = "Hi! My name is Anna!"
+let b : String
+b = "Hi! Nice to meet you"
+if ( a == b ) {
+    if(2 < 3) {
+        print("2 is smaller than three")
+    }
+    else {
+        print("2 is not smaller than three")
+    }
+}
+else {
+    print("String a is not equal to b")
+}
