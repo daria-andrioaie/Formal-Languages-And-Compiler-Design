@@ -1,0 +1,7 @@
+let a : Int
+a = 5
+let b : Int
+b = 7
+if(a<b){
+	print(" a is smaller than b ")
+}
